@@ -1,6 +1,6 @@
 /** @jsx h */
 import { h } from "preact";
-import { useState } from "preact/hooks";
+import { useState, useEffect } from "preact/hooks";
 import { IS_BROWSER } from "$fresh/runtime.ts";
 
 interface CounterProps {
@@ -9,13 +9,29 @@ interface CounterProps {
 
 export default function Counter(props: CounterProps) {
   const [count, setCount] = useState(props.start);
+
+  useEffect(() => {
+    const event = new CustomEvent('logEvent', {
+      detail: count
+    })
+    window.dispatchEvent(event)
+  }, [count])
+
+  const increaseCount = () => {
+    setCount(count + 1)
+  }
+
+  const decreaseCount = () => {
+    setCount(count - 1)
+  }
+
   return (
     <div>
       <p>{count}</p>
-      <button onClick={() => setCount(count - 1)} disabled={!IS_BROWSER}>
+      <button onClick={() => decreaseCount()} disabled={!IS_BROWSER}>
         -1
       </button>
-      <button onClick={() => setCount(count + 1)} disabled={!IS_BROWSER}>
+      <button onClick={() => increaseCount()} disabled={!IS_BROWSER}>
         +1
       </button>
     </div>
